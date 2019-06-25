@@ -1,6 +1,6 @@
-This folder contains a set of external libraries that are used in Open3DV.
+This folder contains a set of external libraries that are used in Open3D.
 
-We want to make Open3DV self-contained and cross-platformly consistent. So
+We want to make Open3D self-contained and cross-platformly consistent. So
 Open3DV does not detect system installed libraries and always link to these
 external libraries.
 
@@ -60,6 +60,10 @@ https://github.com/IntelRealSense/librealsense
 tinyfiledialogs             2.7.2                                   zlib license
 A lightweight cross-platform file dialog library
 https://sourceforge.net/projects/tinyfiledialogs/
+--------------------------------------------------------------------------------
+tinyobjloader                v1.0.0                                  MIT license
+Tiny but powerful single file wavefront obj loader
+https://github.com/syoyo/tinyobjloader
 --------------------------------------------------------------------------------
 pybind11                    2.2                                      BSD license
 Python binding for C++11

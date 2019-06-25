@@ -24,9 +24,21 @@
 // IN THE SOFTWARE.
 // ----------------------------------------------------------------------------
 
-#include "UnitTest.h"
+#include "TestUtility/UnitTest.h"
 
-TEST(PoseGraphIO, Default)
-{
-    NotImplemented();
+// ----------------------------------------------------------------------------
+//
+// ----------------------------------------------------------------------------
+TEST(PoseGraphIO, DISABLED_CreatePoseGraphFromFile) {
+    unit_test::NotImplemented();
 }
+
+// ----------------------------------------------------------------------------
+//
+// ----------------------------------------------------------------------------
+TEST(PoseGraphIO, DISABLED_ReadPoseGraph) { unit_test::NotImplemented(); }
+
+// ----------------------------------------------------------------------------
+//
+// ----------------------------------------------------------------------------
+TEST(PoseGraphIO, DISABLED_WritePoseGraph) { unit_test::NotImplemented(); }

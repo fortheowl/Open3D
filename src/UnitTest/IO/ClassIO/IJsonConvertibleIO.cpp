@@ -24,9 +24,46 @@
 // IN THE SOFTWARE.
 // ----------------------------------------------------------------------------
 
-#include "UnitTest.h"
+#include "TestUtility/UnitTest.h"
 
-TEST(IJsonConvertibleIO, Default)
-{
-    NotImplemented();
+// ----------------------------------------------------------------------------
+//
+// ----------------------------------------------------------------------------
+TEST(IJsonConvertibleIO, DISABLED_ReadIJsonConvertible) {
+    unit_test::NotImplemented();
+}
+
+// ----------------------------------------------------------------------------
+//
+// ----------------------------------------------------------------------------
+TEST(IJsonConvertibleIO, DISABLED_WriteIJsonConvertible) {
+    unit_test::NotImplemented();
+}
+
+// ----------------------------------------------------------------------------
+//
+// ----------------------------------------------------------------------------
+TEST(IJsonConvertibleIO, DISABLED_ReadIJsonConvertibleFromJSON) {
+    unit_test::NotImplemented();
+}
+
+// ----------------------------------------------------------------------------
+//
+// ----------------------------------------------------------------------------
+TEST(IJsonConvertibleIO, DISABLED_WriteIJsonConvertibleToJSON) {
+    unit_test::NotImplemented();
+}
+
+// ----------------------------------------------------------------------------
+//
+// ----------------------------------------------------------------------------
+TEST(IJsonConvertibleIO, DISABLED_ReadIJsonConvertibleFromJSONString) {
+    unit_test::NotImplemented();
+}
+
+// ----------------------------------------------------------------------------
+//
+// ----------------------------------------------------------------------------
+TEST(IJsonConvertibleIO, DISABLED_WriteIJsonConvertibleToJSONString) {
+    unit_test::NotImplemented();
 }

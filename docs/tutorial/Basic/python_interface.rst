@@ -3,38 +3,19 @@
 Python interface
 ----------------
 
+For the C++ interface see :ref:`cplusplus_interface_tutorial`.
 
-.. _install_open3d_module:
 
-Install open3d from PyPi
-========================
+Install open3d Python package
+=============================
 
-Open3D prebuilt binaries can be found at `open3d-python <https://pypi.org/project/open3d-python/>`_.
+For installing Open3D Python package, see :ref:`install_open3d_python`.
 
-.. code-block:: sh
-
-    pip install --user open3d-python
-    # or
-    pip3 install --user open3d-python
-    # or
-    python -m pip install --user open3d-python
-    # or
-    python3 -m pip install --user open3d-python
-
-Open3D is supported on Ubuntu/macOS/Windows only on a standard/native Python distribution, **not Anaconda**. ``pip install open3d-python`` was tested and found to be working out of the box with:
-
-* Windows, python installed from https://www.python.org/downloads/, 2.7 & 3.5 32bit and 64bit
-* MacOS, system python 2.7
-* Ubuntu, system python 2.7 and python 3.5 installed through apt.
 
 Install open3d from source
 ==========================
 
-For installing from source, see :ref:`getting_started_compilation`.
-
-If Open3D is successfully compiled with Python binding, it will create a Python library with the name ``open3d``.
-Typically, you will find a file ``open3d.so`` in ``build/lib/Python`` directory.
-
+For installing from source, see :ref:`compilation`.
 
 .. _import_open3d_module:
 
@@ -42,7 +23,7 @@ Import open3d module
 ====================
 
 This tutorial shows how to import ``open3d`` module and print out help information.
-For trouble shooting, see :ref:`python_binding`.
+For trouble shooting, see :ref:`compilation_ubuntu_python_binding`.
 
 .. literalinclude:: ../../../examples/Python/Basic/python_binding.py
    :language: python
@@ -57,8 +38,8 @@ that show very basic usage of Open3D Python module.
 
 .. literalinclude:: ../../../examples/Python/Basic/python_binding.py
    :language: python
-   :lineno-start: 9
-   :lines: 9-12
+   :lineno-start: 10
+   :lines: 10-12
    :linenos:
 
 This imports ``read_point_cloud`` function from ``open3d`` module. It reads a point cloud file and returns an instance of ``PointCloud`` class. ``print(pcd)`` prints brief information of the point cloud:
@@ -77,8 +58,8 @@ It is recommended to use Python built-in ``help`` function to get definitions an
 
 .. literalinclude:: ../../../examples/Python/Basic/python_binding.py
    :language: python
-   :lineno-start: 14
-   :lines: 14-18
+   :lineno-start: 15
+   :lines: 15-18
    :linenos:
 
 

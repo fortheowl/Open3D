@@ -3,6 +3,7 @@ env:
   global:
     - SHARED=OFF
     - BUILD_DEPENDENCY_FROM_SOURCE=OFF
+    - NPROC=2
 
 notifications:
   email:
@@ -12,9 +13,31 @@ notifications:
 matrix:
 
   include:
-    # Default environment of Ubuntu 14.04
+    # Style check only
     - os: linux
-      dist: trusty
+      dist: xenial
+      sudo: true
+      language: python
+      python: "3.6"
+      addons:
+        apt:
+          sources:
+            - ubuntu-toolchain-r-test
+            - llvm-toolchain-xenial-5.0
+          packages:
+            - cmake
+            - clang-format-5.0
+      before_install: ./util/scripts/setup-linux.sh
+      script:
+        - mkdir build
+        - cd build
+        - cmake -DPYTHON_EXECUTABLE=`which python` ..
+        - pip install -U yapf
+        - make check-style
+
+    # Build docs only
+    - os: linux
+      dist: xenial
       sudo: true
       language: python
       python: "3.6"
@@ -23,29 +46,54 @@ matrix:
           sources:
             - ubuntu-toolchain-r-test
           packages:
-            - gcc-4.8
-            - g++-4.8
-            - cmake-data # to use cmake 3.0 or more recent
             - cmake
+            - doxygen
+      before_install: ./util/scripts/setup-linux.sh
+      script:
+        - mkdir build
+        - cd build
+        - which python
+        - python -V
+        - pip install -U -q sphinx sphinx-rtd-theme
+        - cmake -DPYTHON_EXECUTABLE=`which python` ..
+        - make install-pip-package -j$NPROC
+        - python -c "from open3d import *; import open3d; print(open3d)"
+        - ../util/scripts/make-documentation.sh
 
+    # SHARED=OFF, BUILD_DEPENDENCY_FROM_SOURCE=OFF
     - os: linux
-      dist: trusty
-      sudo: required
+      dist: xenial
+      sudo: true
       language: python
-      python: "3.6"
+      python: "2.7"
       addons:
         apt:
           sources:
             - ubuntu-toolchain-r-test
           packages:
-            - gcc-4.8
-            - g++-4.8
-            - cmake-data # to use cmake 3.0 or more recent
+            - cmake
+      before_install: ./util/scripts/setup-linux.sh
+      script: ./util/scripts/run-travis.sh
+
+    # SHARED=ON, BUILD_DEPENDENCY_FROM_SOURCE=OFF
+    - os: linux
+      dist: xenial
+      sudo: required
+      language: python
+      python: "3.5"
+      addons:
+        apt:
+          sources:
+            - ubuntu-toolchain-r-test
+          packages:
             - cmake
       env: SHARED=ON
+      before_install: ./util/scripts/setup-linux.sh
+      script: ./util/scripts/run-travis.sh
 
+    # SHARED=OFF, BUILD_DEPENDENCY_FROM_SOURCE=ON
     - os: linux
-      dist: trusty
+      dist: xenial
       sudo: required
       language: python
       python: "3.6"
@@ -54,83 +102,44 @@ matrix:
           sources:
             - ubuntu-toolchain-r-test
           packages:
-            - gcc-4.8
-            - g++-4.8
-            - cmake-data # to use cmake 3.0 or more recent
             - cmake
       env: BUILD_DEPENDENCY_FROM_SOURCE=ON
+      before_install: ./util/scripts/setup-linux.sh
+      script: ./util/scripts/run-travis.sh
 
-    # Similar environment of Ubuntu 16.04 (gcc 5.4)
-    # travis ci only supports Ubuntu 14.04 (trusty) gcc-5 and 6
-    # another option is to use docker.
+    # SHARED=ON, BUILD_DEPENDENCY_FROM_SOURCE=ON
     - os: linux
-      dist: trusty
+      dist: xenial
       sudo: required
       language: python
-      python: "3.6"
+      python: "3.7" # Xenial has Python 3.7 on travis
       addons:
         apt:
           sources:
             - ubuntu-toolchain-r-test
           packages:
-            - gcc-6
-            - g++-6
-            - cmake-data # to use cmake 3.0 or more recent
             - cmake
+      env: SHARED=ON BUILD_DEPENDENCY_FROM_SOURCE=ON
+      before_install: ./util/scripts/setup-linux.sh
+      script: ./util/scripts/run-travis.sh
 
-    # Default environment of MacOS El Capitan
-    # compiled using clang shipped with xcode8
+    # Default environment of macOS 10.13 High Sierra
+    # compiled using clang shipped with xcode10.1
     - os: osx
-      osx_image: xcode8
-
-    - os: osx
-      osx_image: xcode8
-      env: SHARED=ON
-
-    # Default environment of MacOS Sierra
-    # compiled using clang shipped with xcode8.3
-    - os: osx
-      osx_image: xcode8.3
+      osx_image: xcode10.1
+      before_install:
+        - ./util/scripts/install-deps-osx.sh
+      script: travis_wait 30 ./util/scripts/run-travis.sh
 
     - os: osx
-      osx_image: xcode8.3
+      osx_image: xcode10.1
       env: BUILD_DEPENDENCY_FROM_SOURCE=ON
+      script: travis_wait 30 ./util/scripts/run-travis.sh
 
-before_install:
-  - if [ "$TRAVIS_OS_NAME" == "linux" ]; then
-      ./util/scripts/install-deps-ubuntu.sh;
-      ./util/scripts/make-documentation.sh;
-      ./util/scripts/install-gtest.sh;
-    fi
-  # scripts/install-deps-osx.sh works well
-  - if [ "$TRAVIS_OS_NAME" == "osx" ]; then
-      brew install python;
-      ./util/scripts/install-deps-osx.sh;
-      ./util/scripts/install-gtest.sh;
-    fi
+    # - env: DOCKER=YES UBUNTU=16.04 BUNDLE=deps ENV=py3 LINK=STATIC
+    #   script: ./util/docker/open3d-test/tools/test.sh $UBUNTU $BUNDLE $ENV $LINK
+    #   before_install: sudo apt-get update && sudo apt-get install -y realpath
 
-  # for reference, display cmake and python version
-  - python -V
-  - cmake --version
-  # - pip install numpy
-
-script:
-  # Build commands
-  - mkdir build
-  - cd build
-  - if [ "$BUILD_DEPENDENCY_FROM_SOURCE" == "OFF" ]; then
-      cmake -DBUILD_SHARED_LIBS=$SHARED -DBUILD_UNIT_TESTS=ON -DCMAKE_INSTALL_PREFIX=~/open3d_install ..;
-    else
-      cmake -DBUILD_SHARED_LIBS=$SHARED -DBUILD_UNIT_TESTS=ON -DBUILD_EIGEN3=ON -DBUILD_GLEW=ON -DBUILD_GLFW=ON -DBUILD_JPEG=ON -DBUILD_JSONCPP=ON -DBUILD_PNG=ON -DCMAKE_INSTALL_PREFIX=~/open3d_install ..;
-    fi
-  # make -j brings 'virtual memory exhausted: Cannot allocate memory' message
-  # this is presumably due to limited memory space of travis-ci
-  - make install
-  - python -V
-  # The following script has issues on SHARED = "ON"
-  # - if [ "$SHARED" == "OFF" ]; then
-  #     cd lib/Tutorial/Basic/ && python file_io.py
-  #   fi
-  # test find_package(Open3D)
-  - test=`cmake --find-package -DNAME=Open3D -DCOMPILER_ID=GNU -DLANGUAGE=C -DMODE=EXIST -DCMAKE_PREFIX_PATH="~/open3d_install/lib/CMake"`
-  - if [ "$test" == "Open3D found." ]; then echo "PASSED find_package(Open3D)."; else echo "FAILED find_package(Open3D)."; exit 1; fi
+    # - env: DOCKER=YES UBUNTU=16.04 BUNDLE=deps ENV=py3 LINK=SHARED
+    #   script: ./util/docker/open3d-test/tools/test.sh $UBUNTU $BUNDLE $ENV $LINK
+    #   before_install: sudo apt-get update && sudo apt-get install -y realpath

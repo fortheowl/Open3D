@@ -2,17 +2,14 @@
 # The MIT License (MIT)
 # See license file or visit www.open3d.org for details
 
-import numpy as np
 import argparse
-import os
-import sys
-sys.path.append("..")
-sys.path.append("../../Utility")
 import json
-from open3d import *
-from common import *
+import sys
+sys.path.append("../Utility")
+from file import *
+sys.path.append(".")
+from initialize_config import *
 from register_fragments import *
-
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="mathching two point clouds")
@@ -23,8 +20,9 @@ if __name__ == "__main__":
 
     with open(args.config) as json_file:
         config = json.load(json_file)
+        initialize_config(config)
         config['debug_mode'] = True
         ply_file_names = get_file_list(
-                os.path.join(config["path_dataset"], folder_fragment), ".ply")
-        register_point_cloud_pair(ply_file_names,
-                args.source_id, args.target_id, config)
+            join(config["path_dataset"], config["folder_fragment"]), ".ply")
+        register_point_cloud_pair(ply_file_names, args.source_id,
+                                  args.target_id, config)
